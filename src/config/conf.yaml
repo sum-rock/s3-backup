@@ -1,0 +1,11 @@
+# The folder within the S3 bucket where the backups will go
+backup_folder: 
+# The number of weeks before a full backup runs and logs are pruned
+weeks_until_refresh:
+# The directory that is to be backed up (only local paths allowed)
+source_dir: 
+# The directory where a restore action will load the data
+restore_dir:
+# A list of paths, relative to the source path, that will be excluded from the backup
+exclude_paths:
+    -

@@ -1,0 +1,7 @@
+.vscode
+__pycache__
+.pytest_cache
+src/.venv
+src/s3_backup/tests/config/secrets.yaml
+src/s3_backup/tests/restore/*
+!src/s3_backup/tests/restore/.gitkeep

@@ -1,0 +1,26 @@
+#!/usr/bin/python3
+
+import argparse
+import os
+
+from s3_backup import Backup, configs
+
+parser = argparse.ArgumentParser(description="Simplify your s3 backups!")
+subparsers = parser.add_subparsers(title="Actions", dest="command")
+backup_parser = subparsers.add_parser("backup", help="perform a backup")
+
+
+@configs
+def backup(**kwargs):
+    b = Backup(kwargs.get("configs"))
+    cmd = b.get_command()
+    os.system(cmd)
+
+
+if __name__ == "__main__":
+    try:
+        action = parser.parse_args().command
+        if action == 'backup':
+            backup()
+    except Exception as e:
+        print(e)
