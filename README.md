@@ -5,10 +5,8 @@ Simplify your S3 Backups!
 This light layer on top of duplicity sets some reasonable defaults and lets you store
 your configurations in yaml files. No more complicated bash called from crontab!
 
-## Building the RPM
+## Quick start
 
-Start by building the python package from the `src` directory.
-
-```unix
-(.venv)$ python setup.py sdist
-```
+1. Install the python package
+2. Move the configs to `/etc/s3-backup`
+3. Create a log directory in `/var/log/s3-backup`
