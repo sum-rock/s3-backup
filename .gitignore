@@ -7,3 +7,5 @@ src/s3_backup/tests/restore/*
 !src/s3_backup/tests/restore/.gitkeep
 src/s3_backup/tests/logs/*
 !/src/s3_backup/tests/logs/.gitkeep
+src/dist
+src/s3_backup.egg-info
