@@ -5,3 +5,5 @@ src/.venv
 src/s3_backup/tests/config/secrets.yaml
 src/s3_backup/tests/restore/*
 !src/s3_backup/tests/restore/.gitkeep
+src/s3_backup/tests/logs/*
+!/src/s3_backup/tests/logs/.gitkeep
