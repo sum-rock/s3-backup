@@ -41,7 +41,7 @@ class TestBackup(TestCase):
 
         Backup(configs)
         log_files = os.listdir(configs.log_dir)
-        self.assertEqual(len(log_files), 1)
+        self.assertEqual(len(log_files), 2)
         self.assertFalse(f"{old_date_one}.log" in log_files)
         self.assertFalse(f"{old_date_two}.log" in log_files)
 
