@@ -2,10 +2,10 @@
 __pycache__
 .pytest_cache
 .venv
-s3_backup/tests/config/secrets.yaml
-s3_backup/tests/restore/*
-!/s3_backup/tests/restore/.gitkeep
-s3_backup/tests/logs/*
-!/s3_backup/tests/logs/.gitkeep
+.env
 /dist
+tests/home/.s3-backup/logs/*
+!/tests/home/.s3-backup/logs/myprofile/.gitkeep
+tests/home/.s3-backup/restore/*
+!/tests/home/.s3-backup/restore/.gitkeep
 /s3_backup.egg-info
