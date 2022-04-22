@@ -4,6 +4,7 @@ amazon:
   aws_secret_access_key:
   bucket_name: 
   hosted_region:
+  folder_path: 
 
 backups:
   restore_dir: "tests/home/restore"
