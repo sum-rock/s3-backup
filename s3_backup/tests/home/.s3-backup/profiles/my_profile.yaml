@@ -1,0 +1,19 @@
+# Fill these values in on a ".env" file in the project root to complete tests
+amazon:
+  aws_access_key_id: "aws-access-99999999"
+  aws_secret_access_key: "aws-secret-88888888"
+  bucket_name: "test-bucket"
+  hosted_region: "us-east-1"
+  folder_path: "/test-bucket-folder"
+
+backups:
+  restore_dir: "tests/home/restore"
+  include_dirs:
+    - "tests/home/source"
+  exclude_dirs:
+    - "tests/home/source/melville"
+
+options:
+  weeks_until_log_purge: 5
+  weeks_until_full_backup: 4
+  passphrase: "cyGficReKVrd.R4drrqvb*-Y"

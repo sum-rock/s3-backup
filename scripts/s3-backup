@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+import click
+
+from s3_backup import SettingsConstructor, Backup
+
+
+@click.group()
+def cli():
+    pass
+
+
+@cli.command(help="Perform backup operation")
+@click.option("--profile", help="indicate the profile to backup")
+def backup(profile):
+    if not profile:
+        raise click.BadOptionUsage("--profile", "Must specify a profile.")
+
+    settings = SettingsConstructor(profile_name=profile)
+    profile = settings.get_profile()
+    Context = settings.get_context_klass()
+
+    with Context():
+        b = Backup(profile)
+        b.do_backup()
+
+
+if __name__ == "__main__":
+    cli()
