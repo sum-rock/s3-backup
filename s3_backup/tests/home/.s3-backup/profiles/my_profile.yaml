@@ -1,10 +1,10 @@
 # Fill these values in on a ".env" file in the project root to complete tests
 amazon:
-  aws_access_key_id:
-  aws_secret_access_key:
-  bucket_name: 
-  hosted_region:
-  folder_path: 
+  aws_access_key_id: "aws-access-99999999"
+  aws_secret_access_key: "aws-secret-88888888"
+  bucket_name: "test-bucket"
+  hosted_region: "us-east-1"
+  folder_path: "/test-bucket-folder"
 
 backups:
   restore_dir: "tests/home/restore"

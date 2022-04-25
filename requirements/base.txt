@@ -6,5 +6,7 @@
 #
 click==8.1.2
     # via -r requirements/base.in
+python-dotenv==0.20.0
+    # via -r requirements/base.in
 pyyaml==6.0
     # via -r requirements/base.in

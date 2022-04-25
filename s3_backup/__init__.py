@@ -1,4 +1,4 @@
 from .backup import Backup
-from .settings import configs
+from .settings import SettingsConstructor
 
-__all__ = ["Backup", "configs"]
+__all__ = ["Backup", "SettingsConstructor"]

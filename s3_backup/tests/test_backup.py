@@ -3,59 +3,118 @@ import os
 import pathlib
 from unittest import TestCase, mock
 
-from s3_backup.backup import Backup
-from s3_backup.settings import Configs, configs
+from s3_backup import Backup, SettingsConstructor
+from dotenv import dotenv_values
+
 
 THIS_DIR = pathlib.Path(__file__).parent.resolve()
-test_config_dir_mock = mock.MagicMock(return_value=f"{THIS_DIR}/config")
-test_log_dir_mock = mock.MagicMock(return_value=f"{THIS_DIR}/logs")
-test_source_dir_mock = mock.MagicMock(return_value=f"{THIS_DIR}/source")
 
 
-@mock.patch("s3_backup.settings.Configs.config_dir", test_config_dir_mock())
-@mock.patch("s3_backup.settings.Configs.log_dir", test_log_dir_mock())
-@mock.patch("s3_backup.settings.Configs.source_dir", test_source_dir_mock())
+def get_test_yaml_data():
+    env_values = dotenv_values(".env")
+    return {
+        "amazon": {
+            "aws_access_key_id": env_values.get("aws_access_key_id"),
+            "aws_secret_access_key": env_values.get("aws_secret_access_key"),
+            "bucket_name": env_values.get("bucket_name"),
+            "hosted_region": env_values.get("hosted_region"),
+            "folder_path": "/test",
+        },
+        "backups": {
+            "restore_dir": f"{THIS_DIR}/home/restore",
+            "include_dirs": [f"{THIS_DIR}/home/source"],
+            "exclude_dirs": [f"{THIS_DIR}/home/source/melville"],
+        },
+        "options": {
+            "weeks_until_log_purge": 5,
+            "weeks_until_full_backup": 4,
+            "passphrase": "cyGficReKVrd.R4drrqvb*-Y",
+        },
+    }
+
+
+test_install_path = mock.MagicMock(return_value=f"{THIS_DIR}/home/.s3-backup")
+test_yaml_data = mock.MagicMock(return_value=get_test_yaml_data())
+
+
+@mock.patch("s3_backup.SettingsConstructor.is_installed", return_value=True)
+@mock.patch("s3_backup.SettingsConstructor.install_path", test_install_path())
+@mock.patch("s3_backup.SettingsConstructor.yaml_data", test_yaml_data())
 class TestBackup(TestCase):
-    @configs
-    def test_create_exclusion_list(self, *args, configs: Configs):
-        Backup(configs)
+    def test_get_command(self, *args):
+        settings = SettingsConstructor(profile_name="my_profile")
+        Context = settings.get_context_klass()
+        profile = settings.get_profile()
 
-        log_files = os.listdir(configs.log_dir)
-        self.assertTrue(".exclude-files.txt" in log_files)
-        with open(f"{configs.log_dir}/.exclude-files.txt", "r") as file:
-            text = file.read()
-            self.assertEqual(text, f"{THIS_DIR}/source/melville\n")
+        today = f"{dt.datetime.now().strftime('%Y-%m-%d')}.log"
+        env_values = dotenv_values(".env")
+        s3_url = (
+            "s3://s3."
+            f"{env_values['hosted_region']}.amazonaws.com/"
+            f"{env_values['bucket_name']}"
+            f"/test"
+        )
+        expected_command = (
+            "duplicity "
+            "--full-if-older-than 4W "
+            f"--log-file {THIS_DIR}/home/.s3-backup/logs/my_profile/{today} "
+            f"--include {THIS_DIR}/home/source "
+            f"--exclude {THIS_DIR}/home/source/melville "
+            f"{THIS_DIR}/home/source "
+            f"{s3_url}"
+        )
 
-    @configs
-    def test_prune_logs(self, *args, configs: Configs):
+        with Context():
+            b = Backup(profile)
+            self.maxDiff = None
+            self.assertEqual(b.get_command(), expected_command)
+
+    def test_prune_logs(self, *args):
+        settings = SettingsConstructor(profile_name="my_profile")
+        Context = settings.get_context_klass()
+        profile = settings.get_profile()
+
+        # Create some old logs
         old_date_one = (
-            (dt.datetime.now() - dt.timedelta(weeks=4, days=1))
+            (dt.datetime.now() - dt.timedelta(weeks=5, days=1))
             .date()
             .strftime("%Y-%m-%d")
         )
         old_date_two = (
-            (dt.datetime.now() - dt.timedelta(weeks=5)).date().strftime("%Y-%m-%d")
+            (dt.datetime.now() - dt.timedelta(weeks=5, days=2))
+            .date()
+            .strftime("%Y-%m-%d")
         )
-        os.system(f"touch {configs.log_dir}/{old_date_one}.log")
-        os.system(f"touch {configs.log_dir}/{old_date_two}.log")
+        os.system(f"touch {profile.log_dir}/{old_date_one}.log")
+        os.system(f"touch {profile.log_dir}/{old_date_two}.log")
 
-        Backup(configs)
-        log_files = os.listdir(configs.log_dir)
-        self.assertEqual(len(log_files), 2)
+        # Verify they were created
+        log_files = os.listdir(profile.log_dir)
+        self.assertTrue(f"{old_date_one}.log" in log_files)
+        self.assertTrue(f"{old_date_two}.log" in log_files)
+
+        with Context():
+            Backup(profile)
+
+        # Verify they were created
+        log_files = os.listdir(profile.log_dir)
         self.assertFalse(f"{old_date_one}.log" in log_files)
         self.assertFalse(f"{old_date_two}.log" in log_files)
 
-    @configs
-    def test_backup_success(self, *args, configs: Configs):
-        b = Backup(configs)
-        cmd = b.get_command()
-        os.system(cmd)
+    def test_backup_successful(self, *args):
+        settings = SettingsConstructor(profile_name="my_profile")
+        Context = settings.get_context_klass()
+        profile = settings.get_profile()
+
+        with Context():
+            b = Backup(profile)
+            b.do_backup()
 
         today = f"{dt.datetime.now().strftime('%Y-%m-%d')}.log"
-        self.assertTrue(today in os.listdir(configs.log_dir))
+        self.assertTrue(today in os.listdir(profile.log_dir))
 
-        with open(f"{configs.log_dir}/{today}", "r") as file:
+        with open(f"{profile.log_dir}/{today}", "r") as file:
             log_content = file.read()
             self.assertTrue("Backup Statistics" in log_content)
 
-        os.remove(f"{configs.log_dir}/{today}")
+        os.remove(f"{profile.log_dir}/{today}")
