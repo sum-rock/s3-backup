@@ -7,6 +7,7 @@ amazon:
 
 backups:
   restore_dir:
+  sources_dir:
   include_dirs:
     - 
   exclude_dirs:

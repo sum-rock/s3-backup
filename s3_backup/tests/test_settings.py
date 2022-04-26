@@ -25,7 +25,8 @@ class TestSettingsConstructor(TestCase):
             },
             "backups": {
                 "restore_dir": "tests/home/restore",
-                "include_dirs": ["tests/home/source"],
+                "sources_dir": "tests/home/source",
+                "include_dirs": [None],
                 "exclude_dirs": ["tests/home/source/melville"],
             },
             "options": {
@@ -66,6 +67,7 @@ class TestSettingsConstructor(TestCase):
 
         backups = self.expected_yaml_data["backups"]
         self.assertEqual(backups["restore_dir"], profile.restore_dir)
+        self.assertEqual(backups["sources_dir"], profile.sources_dir)
         self.assertEqual(backups["include_dirs"], profile.include_dirs)
         self.assertEqual(backups["exclude_dirs"], profile.exclude_dirs)
 

@@ -10,6 +10,7 @@ import yaml
 class Profile:
     s3_url: str = ""
     restore_dir: str = ""
+    sources_dir: str = ""
     include_dirs: List[str] = []
     exclude_dirs: List[str] = []
     weeks_until_log_purge: int = 0
@@ -106,6 +107,7 @@ class SettingsConstructor:
         return Profile(
             s3_url=self._s3_url,
             restore_dir=backups.get("restore_dir"),
+            sources_dir=backups.get("sources_dir"),
             include_dirs=backups.get("include_dirs"),
             exclude_dirs=backups.get("exclude_dirs"),
             weeks_until_log_purge=options.get("weeks_until_log_purge"),
