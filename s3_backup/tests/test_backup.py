@@ -3,9 +3,9 @@ import os
 import pathlib
 from unittest import TestCase, mock
 
-from s3_backup import Backup, SettingsConstructor
 from dotenv import dotenv_values
 
+from s3_backup import Backup, SettingsConstructor
 
 THIS_DIR = pathlib.Path(__file__).parent.resolve()
 

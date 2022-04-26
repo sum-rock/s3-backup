@@ -2,7 +2,7 @@
 
 import click
 
-from s3_backup import SettingsConstructor, Backup
+from s3_backup import Backup, SettingsConstructor, initialize_to_path
 
 
 @click.group()
@@ -23,6 +23,18 @@ def backup(profile):
     with Context():
         b = Backup(profile)
         b.do_backup()
+
+    click.echo("success")
+
+
+@cli.command(help="Initialize the s3-backup CLI")
+@click.option("--path", help="indicate where to store your s3-backup data")
+def init(path):
+    if not path:
+        raise click.BadOptionUsage("--path", "Must specify a path.")
+
+    initialize_to_path(path)
+    click.echo("success")
 
 
 if __name__ == "__main__":

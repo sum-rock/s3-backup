@@ -1,6 +1,5 @@
 import os
 import pathlib
-from typing import Set
 from unittest import TestCase, mock
 
 from click import BadOptionUsage
