@@ -41,12 +41,14 @@ class Backup:
         cmd += f"--log-file {self._new_log_path} "
 
         for include_path in self.profile.include_dirs:
-            cmd += f"--include {include_path} "
+            if isinstance(include_path, str):
+                cmd += f"--include {include_path} "
 
         for exclude_path in self.profile.exclude_dirs:
-            cmd += f"--exclude {exclude_path} "
+            if isinstance(exclude_path, str):
+                cmd += f"--exclude {exclude_path} "
 
-        cmd += f"{self.profile.include_dirs[0]} "
+        cmd += f"{self.profile.sources_dir} "
         cmd += f"{self.profile.s3_url}"
         return cmd
 

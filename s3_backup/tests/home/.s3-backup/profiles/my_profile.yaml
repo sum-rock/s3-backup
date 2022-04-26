@@ -8,8 +8,9 @@ amazon:
 
 backups:
   restore_dir: "tests/home/restore"
+  sources_dir: "tests/home/source"
   include_dirs:
-    - "tests/home/source"
+    -
   exclude_dirs:
     - "tests/home/source/melville"
 

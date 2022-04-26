@@ -22,7 +22,8 @@ def get_test_yaml_data():
         },
         "backups": {
             "restore_dir": f"{THIS_DIR}/home/restore",
-            "include_dirs": [f"{THIS_DIR}/home/source"],
+            "sources_dir": f"{THIS_DIR}/home/source",
+            "include_dirs": [None],
             "exclude_dirs": [f"{THIS_DIR}/home/source/melville"],
         },
         "options": {
@@ -58,7 +59,6 @@ class TestBackup(TestCase):
             "duplicity "
             "--full-if-older-than 4W "
             f"--log-file {THIS_DIR}/home/.s3-backup/logs/my_profile/{today} "
-            f"--include {THIS_DIR}/home/source "
             f"--exclude {THIS_DIR}/home/source/melville "
             f"{THIS_DIR}/home/source "
             f"{s3_url}"
