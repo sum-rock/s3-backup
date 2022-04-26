@@ -1,10 +1,14 @@
 import json
 import os
+import pathlib
 from functools import cached_property
 from typing import List, Type
 
 import click
 import yaml
+
+THIS_DIR = str(pathlib.Path(__file__).parent.resolve())
+INSTALL_JSON = f"{THIS_DIR}/data/install.json"
 
 
 class Profile:
@@ -54,7 +58,7 @@ class SettingsConstructor:
     @cached_property
     def is_installed(self) -> bool:
         """Determine if s3-backup has been installed/setup."""
-        return "install.json" in os.listdir("./data")
+        return os.path.isfile(INSTALL_JSON)
 
     @cached_property
     def install_path(self) -> str:
@@ -64,7 +68,7 @@ class SettingsConstructor:
                 "--profile",
                 "Cannot retrieve installation path because s3-backup is not initialized",
             )
-        with open("./data/install.json", "r") as file:
+        with open(INSTALL_JSON, "r") as file:
             data = json.load(file)
             return data["path"]
 
