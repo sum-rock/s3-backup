@@ -1,6 +1,0 @@
--r ./base.in
-
-pytest
-black
-isort
-flake8
