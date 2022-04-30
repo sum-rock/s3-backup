@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "S3-backup"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "> 3.8, < 3.10"
+pyyaml = "*"
+click = "*"
+python-dotenv = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+black = "*"
+isort = "*"
+flake8 = "*"
