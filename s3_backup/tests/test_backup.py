@@ -108,7 +108,7 @@ class TestBackup(TestCase):
 
         with Context():
             b = Backup(profile)
-            b.do_backup()
+            b.do_backup(opts={"--allow-source-mismatch": ""})
 
         today = f"{dt.datetime.now().strftime('%Y-%m-%d')}.log"
         self.assertTrue(today in os.listdir(profile.log_dir))
