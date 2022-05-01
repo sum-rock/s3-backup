@@ -1,4 +1,5 @@
 import datetime as dt
+from typing import Optional
 import os
 
 from .settings import Profile
@@ -35,7 +36,7 @@ class Backup:
             os.remove(f"{self.profile.log_dir}/{today}")
         return f"{self.profile.log_dir}/{today}"
 
-    def get_command(self) -> str:
+    def get_command(self, opts: Optional[dict] = None) -> str:
         cmd = "duplicity "
         cmd += f"--full-if-older-than {self.profile.weeks_until_full_backup}W "
         cmd += f"--log-file {self._new_log_path} "
@@ -48,9 +49,13 @@ class Backup:
             if isinstance(exclude_path, str):
                 cmd += f"--exclude {exclude_path} "
 
+        if isinstance(opts, dict):
+            for key, value in opts.items():
+                cmd += f"{key} {value} "
+        
         cmd += f"{self.profile.sources_dir} "
         cmd += f"{self.profile.s3_url}"
         return cmd
 
-    def do_backup(self):
-        os.system(self.get_command())
+    def do_backup(self, opts: Optional[dict] = None):
+        os.system(self.get_command(opts=opts))
