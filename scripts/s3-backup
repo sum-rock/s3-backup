@@ -2,7 +2,7 @@
 
 import click
 
-from s3_backup import Backup, SettingsConstructor, initialize_to_path
+from s3_backup import Backup, Initialize, SettingsConstructor
 
 
 @click.group()
@@ -33,7 +33,8 @@ def init(path):
     if not path:
         raise click.BadOptionUsage("--path", "Must specify a path.")
 
-    initialize_to_path(path)
+    i = Initialize()
+    i.do_initialize(path)
     click.echo("success")
 
 

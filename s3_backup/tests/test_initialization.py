@@ -6,7 +6,7 @@ from unittest import TestCase
 
 import click
 
-from s3_backup import initialize_to_path
+from s3_backup import Initialize
 
 TEST_DIR = str(pathlib.Path(__file__).parent.resolve())
 TEST_S3_BACKUP = f"{TEST_DIR}/.s3-backup"
@@ -30,7 +30,8 @@ class TestInitialization(TestCase):
     def test_initialization_path(self):
         self.clear_if_installed()
 
-        initialize_to_path(TEST_DIR)
+        i = Initialize()
+        i.do_initialize(TEST_DIR)
         self.assertTrue(os.path.isfile(TEST_INSTALL_JSON))
 
         with open(TEST_INSTALL_JSON, "r") as file:
@@ -45,14 +46,15 @@ class TestInitialization(TestCase):
     def test_update_old_paths_when_installed_twice(self):
         self.clear_if_installed()
 
-        initialize_to_path(TEST_DIR)
+        i = Initialize()
+        i.do_initialize(TEST_DIR)
         self.assertTrue(os.path.isfile(TEST_INSTALL_JSON))
 
         with open(TEST_INSTALL_JSON, "r") as file:
             data = json.load(file)
 
         self.assertEqual(data["path"], TEST_DIR)
-        initialize_to_path(f"{TEST_DIR}/home/restore")
+        i.do_initialize(f"{TEST_DIR}/home/restore")
 
         with open(TEST_INSTALL_JSON, "r") as file:
             new_data = json.load(file)
@@ -64,13 +66,14 @@ class TestInitialization(TestCase):
 
     def test_error_when_install_path_does_not_exist(self):
         with self.assertRaises(click.BadArgumentUsage):
-            initialize_to_path("this/does/not/exist")
+            i = Initialize()
+            i.do_initialize("this/does/not/exist")
 
     def test_error_when_install_path_is_already_the_path_installed(self):
         self.clear_if_installed()
-
-        initialize_to_path(TEST_DIR)
+        i = Initialize()
+        i.do_initialize(TEST_DIR)
         self.assertTrue(os.path.isdir(TEST_S3_BACKUP))
 
         with self.assertRaises(click.BadArgumentUsage):
-            initialize_to_path(TEST_DIR)
+            i.do_initialize(TEST_DIR)
