@@ -38,8 +38,8 @@ test_install_path = mock.MagicMock(return_value=f"{THIS_DIR}/home/.s3-backup")
 test_yaml_data = mock.MagicMock(return_value=get_test_yaml_data())
 
 
-@mock.patch("s3_backup.SettingsConstructor.is_installed", return_value=True)
-@mock.patch("s3_backup.SettingsConstructor.install_path", test_install_path())
+@mock.patch("s3_backup.Installation.is_installed", return_value=True)
+@mock.patch("s3_backup.Installation.install_path", test_install_path())
 @mock.patch("s3_backup.SettingsConstructor.yaml_data", test_yaml_data())
 class TestBackup(TestCase):
     def test_get_command(self, *args):
@@ -96,7 +96,7 @@ class TestBackup(TestCase):
         with Context():
             Backup(profile)
 
-        # Verify they were created
+        # Verify they were deleted
         log_files = os.listdir(profile.log_dir)
         self.assertFalse(f"{old_date_one}.log" in log_files)
         self.assertFalse(f"{old_date_two}.log" in log_files)

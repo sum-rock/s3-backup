@@ -16,6 +16,10 @@ class Installation:
     def _install_json_path(self):
         return f"{THIS_DIR}/data/install.json"
 
+    @cached_property
+    def _template_path(self):
+        return f"{THIS_DIR}/data/template.yaml"
+
     @property
     def is_installed(self):
         return os.path.isfile(self._install_json_path)
