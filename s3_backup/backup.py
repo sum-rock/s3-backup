@@ -1,6 +1,6 @@
 import datetime as dt
-from typing import Optional
 import os
+from typing import Optional
 
 from .settings import Profile
 
@@ -52,7 +52,7 @@ class Backup:
         if isinstance(opts, dict):
             for key, value in opts.items():
                 cmd += f"{key} {value} "
-        
+
         cmd += f"{self.profile.sources_dir} "
         cmd += f"{self.profile.s3_url}"
         return cmd

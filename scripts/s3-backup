@@ -2,7 +2,7 @@
 
 import click
 
-from s3_backup import Backup, SettingsConstructor, initialize_to_path
+from s3_backup import Backup, Initialize, ManageProfiles, SettingsConstructor
 
 
 @click.group()
@@ -10,7 +10,23 @@ def cli():
     pass
 
 
-@cli.command(help="Perform backup operation")
+@cli.command(help="Initialize the CLI, required before executing or managing")
+@click.option("--path", help="indicate where to store your s3-backup data")
+def init(path):
+    if not path:
+        raise click.BadOptionUsage("--path", "Must specify a path.")
+
+    i = Initialize()
+    i.do_initialize(path)
+    click.echo("success")
+
+
+@click.group(help="Execution commands, including backup and restore")
+def execute():
+    pass
+
+
+@execute.command(help="Perform backup operation")
 @click.option("--profile", help="indicate the profile to backup")
 def backup(profile):
     if not profile:
@@ -27,15 +43,19 @@ def backup(profile):
     click.echo("success")
 
 
-@cli.command(help="Initialize the s3-backup CLI")
-@click.option("--path", help="indicate where to store your s3-backup data")
-def init(path):
-    if not path:
-        raise click.BadOptionUsage("--path", "Must specify a path.")
+@click.group(help="Profile management commands, including add and remove")
+def manage():
+    pass
 
-    initialize_to_path(path)
-    click.echo("success")
+
+@manage.command(help="Create a new profile")
+@click.option("--profile", help="name of the new profile")
+def create_profile(profile):
+    m = ManageProfiles()
+    m.do_add(profile)
 
 
 if __name__ == "__main__":
+    cli.add_command(execute)
+    cli.add_command(manage)
     cli()

@@ -1,14 +1,11 @@
-import json
 import os
-import pathlib
 from functools import cached_property
 from typing import List, Type
 
 import click
 import yaml
 
-THIS_DIR = str(pathlib.Path(__file__).parent.resolve())
-INSTALL_JSON = f"{THIS_DIR}/data/install.json"
+from .installation import Installation
 
 
 class Profile:
@@ -49,35 +46,11 @@ class ContextManager:
                 del os.environ[variable]
 
 
-class SettingsConstructor:
+class SettingsConstructor(Installation):
     """Constructs a context manager and profile from a given profile name."""
 
     def __init__(self, profile_name: str):
         self.profile_name = profile_name
-
-    @cached_property
-    def is_installed(self) -> bool:
-        """Determine if s3-backup has been installed/setup."""
-        return os.path.isfile(INSTALL_JSON)
-
-    @cached_property
-    def install_path(self) -> str:
-        """The path where s3-backup has installed the profile directories."""
-        if not self.is_installed:
-            raise click.BadOptionUsage(
-                "--profile",
-                "Cannot retrieve installation path because s3-backup is not initialized",
-            )
-        with open(INSTALL_JSON, "r") as file:
-            data = json.load(file)
-            return data["path"]
-
-    @cached_property
-    def installed_profiles(self) -> List[str]:
-        """A list of profiles that have been installed."""
-        return [
-            x.replace(".yaml", "") for x in os.listdir(f"{self.install_path}/profiles")
-        ]
 
     @cached_property
     def yaml_data(self):
