@@ -37,7 +37,7 @@ class TestInitialization(TestCase):
         with open(TEST_INSTALL_JSON, "r") as file:
             data = json.load(file)
 
-        self.assertEqual(data["path"], TEST_DIR)
+        self.assertEqual(data["path"], TEST_S3_BACKUP)
         self.assertTrue(os.path.isdir(f"{TEST_S3_BACKUP}/logs"))
         self.assertTrue(os.path.isdir(f"{TEST_S3_BACKUP}/profiles"))
 
@@ -53,14 +53,14 @@ class TestInitialization(TestCase):
         with open(TEST_INSTALL_JSON, "r") as file:
             data = json.load(file)
 
-        self.assertEqual(data["path"], TEST_DIR)
+        self.assertEqual(data["path"], TEST_S3_BACKUP)
         i.do_initialize(f"{TEST_DIR}/home/restore")
 
         with open(TEST_INSTALL_JSON, "r") as file:
             new_data = json.load(file)
 
-        self.assertEqual(new_data["path"], f"{TEST_DIR}/home/restore")
-        self.assertEqual(new_data["old_paths"], [TEST_DIR])
+        self.assertEqual(new_data["path"], f"{TEST_DIR}/home/restore/.s3-backup")
+        self.assertEqual(new_data["old_paths"], [TEST_S3_BACKUP])
 
         self.clear_if_installed()
 
