@@ -8,6 +8,6 @@ dist
 build
 tests/home/.s3-backup/logs/*
 !/tests/home/.s3-backup/logs/myprofile/.gitkeep
-tests/home/.s3-backup/restore/*
-!/tests/home/.s3-backup/restore/.gitkeep
+tests/home/restore/*
+!/tests/home/restore/.gitkeep
 /s3_backup.egg-info
