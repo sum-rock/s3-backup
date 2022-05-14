@@ -4,7 +4,8 @@ __pycache__
 .tool-versions
 .venv
 .env
-/dist
+dist
+build
 tests/home/.s3-backup/logs/*
 !/tests/home/.s3-backup/logs/myprofile/.gitkeep
 tests/home/.s3-backup/restore/*

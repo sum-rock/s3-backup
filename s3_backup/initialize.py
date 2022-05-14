@@ -13,17 +13,20 @@ INSTALL_JSON = f"{THIS_DIR}/data/install.json"
 class Initialize(Installation):
     """Initializes the program by creating a directory for profiles."""
 
-    def do_initialize(self, new_install_path: str):
+    def do_initialize(self, new_install_root: str):
         """Command entry point.
 
         This method validates the path and handels the creation of the
         installation file and the directory structure for the install location.
         """
         # Raise error if not given a directory path
-        if not os.path.isdir(new_install_path):
+        if not os.path.isdir(new_install_root):
             raise click.BadArgumentUsage(
                 "This path is not a directory. Please choose a valid path."
             )
+
+        new_install_path = f"{new_install_root}/.s3-backup"
+
         # Raise error new install path is the same as the old install path
         if self.is_installed and self.install_path == new_install_path:
             raise click.BadArgumentUsage(
@@ -40,8 +43,8 @@ class Initialize(Installation):
         assert install_path == new_install_path
 
         # Create the folder structure
-        os.makedirs(f"{install_path}/.s3-backup/logs")
-        os.makedirs(f"{install_path}/.s3-backup/profiles")
+        os.makedirs(f"{install_path}/logs")
+        os.makedirs(f"{install_path}/profiles")
 
     def _write_to_path_file(self, data: dict):
         """Write the given data to the installation file."""
