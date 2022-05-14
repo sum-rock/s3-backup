@@ -2,8 +2,14 @@
 
 import click
 
-from s3_backup import (Backup, Initialize, ManageProfiles, Restore,
-                       SettingsConstructor)
+from s3_backup import (
+    Backup,
+    Collection,
+    Initialize,
+    ManageProfiles,
+    Restore,
+    SettingsConstructor,
+)
 
 
 @click.group()
@@ -55,10 +61,45 @@ def restore(name):
     Context = settings.get_context_klass()
 
     with Context():
-        b = Restore(profile)
-        b.do_restore()
+        r = Restore(profile)
+        r.do_restore()
 
     click.echo("success")
+
+
+@click.group(help="Output collection information")
+def collection():
+    pass
+
+
+@collection.command(help="Output collection status")
+@click.option("--name", help="indicate the profile to evaluate.")
+def collection_status(name):
+    if not name:
+        raise click.BadOptionUsage("--name", "Must specify a profile.")
+
+    settings = SettingsConstructor(profile_name=name)
+    profile = settings.get_profile()
+    Context = settings.get_context_klass()
+
+    with Context():
+        c = Collection(profile)
+        c.get_collection_status()
+
+
+@collection.command(help="Output a file list of files currently in the backup.")
+@click.option("--name", help="indicate the profile to evaluate.")
+def list_current_files(name):
+    if not name:
+        raise click.BadOptionUsage("--name", "Must specify a profile.")
+
+    settings = SettingsConstructor(profile_name=name)
+    profile = settings.get_profile()
+    Context = settings.get_context_klass()
+
+    with Context():
+        c = Collection(profile)
+        c.get_file_list()
 
 
 @click.group(help="Profile management commands, including add, remove, and edit")
@@ -73,7 +114,7 @@ def create(name):
         raise click.BadOptionUsage("--name", "Must provide a name for your profile.")
     m = ManageProfiles()
     m.do_add(name)
-    
+
 
 @profile.command(help="Edit a profile")
 @click.option("--name", help="name of the profile to edit")
@@ -88,8 +129,9 @@ def remove(name):
     m = ManageProfiles()
     m.do_remove(name)
 
-    
+
 if __name__ == "__main__":
     cli.add_command(execute)
     cli.add_command(profile)
+    cli.add_command(collection)
     cli()

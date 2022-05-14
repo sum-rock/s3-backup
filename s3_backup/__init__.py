@@ -1,4 +1,5 @@
 from .backup import Backup
+from .collection import Collection
 from .initialize import Initialize
 from .installation import Installation
 from .manage import ManageProfiles
@@ -12,4 +13,5 @@ __all__ = [
     "Initialize",
     "Installation",
     "ManageProfiles",
+    "Collection",
 ]
