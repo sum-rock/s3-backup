@@ -2,7 +2,8 @@
 
 import click
 
-from s3_backup import Backup, Initialize, ManageProfiles, SettingsConstructor
+from s3_backup import (Backup, Initialize, ManageProfiles, Restore,
+                       SettingsConstructor)
 
 
 @click.group()
@@ -39,6 +40,23 @@ def backup(name):
     with Context():
         b = Backup(profile)
         b.do_backup()
+
+    click.echo("success")
+
+
+@execute.command(help="Perform restore operation")
+@click.option("--name", help="indicate the profile to restore")
+def restore(name):
+    if not name:
+        raise click.BadOptionUsage("--name", "Must specify a profile.")
+
+    settings = SettingsConstructor(profile_name=name)
+    profile = settings.get_profile()
+    Context = settings.get_context_klass()
+
+    with Context():
+        b = Restore(profile)
+        b.do_restore()
 
     click.echo("success")
 

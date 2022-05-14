@@ -1,46 +1,19 @@
 import datetime as dt
 import os
-import pathlib
-from unittest import TestCase, mock
-
-from dotenv import dotenv_values
+from unittest import TestCase
+from unittest.mock import MagicMock, patch
 
 from s3_backup import Backup, SettingsConstructor
 
-THIS_DIR = pathlib.Path(__file__).parent.resolve()
+from .profile_mocks import ENV_VALUES, INSTALL_PATH, THIS_DIR, YAML_DATA
+
+install_path = MagicMock(return_value=INSTALL_PATH)
+yaml_data = MagicMock(return_value=YAML_DATA)
 
 
-def get_test_yaml_data():
-    env_values = dotenv_values(".env")
-    return {
-        "amazon": {
-            "aws_access_key_id": env_values.get("aws_access_key_id"),
-            "aws_secret_access_key": env_values.get("aws_secret_access_key"),
-            "bucket_name": env_values.get("bucket_name"),
-            "hosted_region": env_values.get("hosted_region"),
-            "folder_path": "/test",
-        },
-        "backups": {
-            "restore_dir": f"{THIS_DIR}/home/restore",
-            "sources_dir": f"{THIS_DIR}/home/source",
-            "include_dirs": [None],
-            "exclude_dirs": [f"{THIS_DIR}/home/source/melville"],
-        },
-        "options": {
-            "weeks_until_log_purge": 5,
-            "weeks_until_full_backup": 4,
-            "passphrase": "cyGficReKVrd.R4drrqvb*-Y",
-        },
-    }
-
-
-test_install_path = mock.MagicMock(return_value=f"{THIS_DIR}/home/.s3-backup")
-test_yaml_data = mock.MagicMock(return_value=get_test_yaml_data())
-
-
-@mock.patch("s3_backup.Installation.is_installed", return_value=True)
-@mock.patch("s3_backup.Installation.install_path", test_install_path())
-@mock.patch("s3_backup.SettingsConstructor.yaml_data", test_yaml_data())
+@patch("s3_backup.Installation.is_installed", return_value=True)
+@patch("s3_backup.Installation.install_path", install_path())
+@patch("s3_backup.SettingsConstructor.yaml_data", yaml_data())
 class TestBackup(TestCase):
     def test_get_command(self, *args):
         settings = SettingsConstructor(profile_name="my_profile")
@@ -48,11 +21,10 @@ class TestBackup(TestCase):
         profile = settings.get_profile()
 
         today = f"{dt.datetime.now().strftime('%Y-%m-%d')}.log"
-        env_values = dotenv_values(".env")
         s3_url = (
             "s3://s3."
-            f"{env_values['hosted_region']}.amazonaws.com/"
-            f"{env_values['bucket_name']}"
+            f"{ENV_VALUES['hosted_region']}.amazonaws.com/"
+            f"{ENV_VALUES['bucket_name']}"
             f"/test"
         )
         expected_command = (
