@@ -59,4 +59,62 @@ cd ~
 git clone https://gitlab.com/duplicity/duplicity.git
 cd duplicity
 python3 setup.py install
+cd ../
+rm -rf duplicity
+```
+
+## Install s3-backup
+
+Still as root
+
+```bash
+cd ~
+git clone https://github.com/sum-rock/s3-backup.git
+cd s3-backup
+python setup.py install
+cd ../
+rm -rf s3-backup 
+```
+
+## Usage
+
+### Initializing
+
+Before you are able to to do anything you'll need to initialize s3-backup. All commands
+need to be run as root.
+
+The path option within the init command specifies where the profile data and logs will
+be saved.
+
+```bash
+s3-backup init --path ~
+```
+
+### Profiles
+
+Once initialized, profiles can be created, edited and removed through the `profile`
+subcommand. The name option within the profile subcommand is used to specify the profile
+name.
+
+```bash
+s3-backup profile [create, edit, remove] --name sample-profile
+```
+
+### Execute
+
+Profiles are able to be used to execute backup and restore commands. (These parse to
+standard duplicity commands.) The name option within the profile subcommand is used to
+specify the profile name.
+
+```bash
+s3-backup execute [backup, restore] --name sample-profile
+```
+
+### Collection
+
+The collection subcommand is used to print the status of the remote backup. Again, the
+name option is used to specify the profile of the collection being evaluated.
+
+```bash
+s3-backup collection [collection-status, list-current-file] --name sample-profile
 ```
