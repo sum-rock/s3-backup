@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 from unittest import TestCase, mock
 
 import click
@@ -20,7 +21,10 @@ class TestAddProfile(TestCase):
 
         manager.do_add("my_new_profile")
         self.assertTrue(os.path.isfile(f"{profile_dir}/my_new_profile.yaml"))
+        self.assertTrue(os.path.isdir(manager.get_log_path("my_new_profile")))
+
         os.remove(f"{profile_dir}/my_new_profile.yaml")
+        shutil.rmtree(manager.get_log_path("my_new_profile"))
 
     def test_do_add_error_if_profile_exists(self, *args):
         manager = ManageProfiles()

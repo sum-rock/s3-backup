@@ -2,14 +2,8 @@
 
 import click
 
-from s3_backup import (
-    Backup,
-    Collection,
-    Initialize,
-    ManageProfiles,
-    Restore,
-    SettingsConstructor,
-)
+from s3_backup import (Backup, Collection, Initialize, ManageProfiles, Restore,
+                       SettingsConstructor)
 
 
 @click.group()
