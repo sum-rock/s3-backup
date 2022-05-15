@@ -41,7 +41,7 @@ Still as root
 cd ~
 git clone https://github.com/sum-rock/s3-backup.git
 cd s3-backup
-python setup.py install
+python3.9 setup.py install
 cd ../
 rm -rf s3-backup 
 ```
