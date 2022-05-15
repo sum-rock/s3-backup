@@ -26,41 +26,11 @@ dnf upgrade --refresh -y
 dnf install epel-release
 ```
 
-### System dependencies
-
-Make sure you have the following installed.
+### Duplicity
 
 ```bash
-dnf -y install \
-    git wget gcc rsync librsync-devel \
-    python3 python3-devel python3-pip python3-lockfile python3-paramiko python3-boto3
-```
-
-### Python dependencies
-
-Install these as root. Ignore the pip complaints.
-
-```bash
-pip3 install \ 
-    PyDrive \
-    python-swiftclient \
-    python-keystoneclient \
-    fasteners \
-    future \
-    wheel
-```
-
-### Build duplicity from source
-
-Because you're a boss (also you're still root).
-
-```bash
-cd ~
-git clone https://gitlab.com/duplicity/duplicity.git
-cd duplicity
-python3 setup.py install
-cd ../
-rm -rf duplicity
+sudo dnf install python3.9 duplicity
+sudo pip3 install boto
 ```
 
 ## Install s3-backup
