@@ -8,5 +8,5 @@ setup(
     package_data={"s3_backup": ["data/*"]},
     scripts=["scripts/s3-backup"],
     description="Simplify your S3 backups!",
-    install_requires=["pytest", "pyyaml"],
+    install_requires=["pytest", "pyyaml", "click"],
 )
