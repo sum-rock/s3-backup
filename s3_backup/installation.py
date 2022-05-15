@@ -52,6 +52,10 @@ class Installation:
             x.replace(".yaml", "") for x in os.listdir(f"{self.install_path}/profiles")
         ]
 
-    def get_profile_path(self, name: str):
+    def get_profile_path(self, name: str) -> str:
         """Get the path of the profile with the given name."""
         return f"{self.install_path}/profiles/{name}.yaml"
+
+    def get_log_path(self, name: str) -> str:
+        """Get the path of the logs for the given profile"""
+        return f"{self.install_path}/logs/{name}"
