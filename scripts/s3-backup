@@ -28,8 +28,9 @@ def execute():
 
 
 @execute.command(help="Perform backup operation")
+@click.option("--allow-source-mismatch", default=False)
 @click.option("--name", help="indicate the profile to backup")
-def backup(name):
+def backup(allow_source_mismatch, name):
     if not name:
         raise click.BadOptionUsage("--name", "Must specify a profile.")
 
@@ -39,7 +40,11 @@ def backup(name):
 
     with Context():
         b = Backup(profile)
-        b.do_backup()
+
+        if allow_source_mismatch:
+            b.do_backup(opts={"--allow-source-mismatch": ""})
+        else:
+            b.do_backup()
 
     click.echo("success")
 
@@ -94,6 +99,23 @@ def list_current_files(name):
     with Context():
         c = Collection(profile)
         c.get_file_list()
+
+
+@collection.command(help="Run the duplicity cleanup command for this profile.")
+@click.option("--extra-clean", default=False)
+@click.option("--force", default=True)
+@click.option("--name", help="indicate the profile to cleanup.")
+def cleanup(extra_clean, force, name):
+    if not name:
+        raise click.BadOptionUsage("--name", "Must specify a profile.")
+
+    settings = SettingsConstructor(profile_name=name)
+    profile = settings.get_profile()
+    Context = settings.get_context_klass()
+
+    with Context():
+        c = Collection(profile)
+        c.do_cleanup(extra_clean, force)
 
 
 @click.group(help="Profile management commands, including add, remove, and edit")
