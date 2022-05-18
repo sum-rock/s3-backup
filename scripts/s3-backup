@@ -73,7 +73,7 @@ def collection():
 
 @collection.command(help="Output collection status")
 @click.option("--name", help="indicate the profile to evaluate.")
-def collection_status(name):
+def status(name):
     if not name:
         raise click.BadOptionUsage("--name", "Must specify a profile.")
 
@@ -102,10 +102,8 @@ def list_current_files(name):
 
 
 @collection.command(help="Run the duplicity cleanup command for this profile.")
-@click.option("--extra-clean", default=False)
-@click.option("--force", default=True)
 @click.option("--name", help="indicate the profile to cleanup.")
-def cleanup(extra_clean, force, name):
+def cleanup(name):
     if not name:
         raise click.BadOptionUsage("--name", "Must specify a profile.")
 
@@ -115,7 +113,7 @@ def cleanup(extra_clean, force, name):
 
     with Context():
         c = Collection(profile)
-        c.do_cleanup(extra_clean, force)
+        c.do_cleanup()
 
 
 @click.group(help="Profile management commands, including add, remove, and edit")
