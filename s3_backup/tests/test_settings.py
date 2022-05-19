@@ -1,17 +1,15 @@
 import os
-import pathlib
 from unittest import TestCase, mock
-
-from click import BadOptionUsage
 
 from s3_backup import SettingsConstructor
 
-THIS_DIR = pathlib.Path(__file__).parent.resolve()
-test_install_path = mock.MagicMock(return_value=f"{THIS_DIR}/home/.s3-backup")
+from .profile_mocks import INSTALL_PATH, THIS_DIR
+
+test_install_path = mock.MagicMock(return_value=INSTALL_PATH)
 
 
-@mock.patch("s3_backup.SettingsConstructor.is_installed", return_value=True)
-@mock.patch("s3_backup.SettingsConstructor.install_path", test_install_path())
+@mock.patch("s3_backup.Installation.is_installed", return_value=True)
+@mock.patch("s3_backup.Installation.install_path", test_install_path())
 class TestSettingsConstructor(TestCase):
     def setUp(self):
         self.expected_yaml_data = {
@@ -51,11 +49,6 @@ class TestSettingsConstructor(TestCase):
     def test_yaml_data(self, *args):
         s = SettingsConstructor(profile_name="my_profile")
         self.assertEqual(s.yaml_data, self.expected_yaml_data)
-
-    def test_yaml_data_error_when_no_profile(self, *args):
-        s = SettingsConstructor(profile_name="this_does_not_exist")
-        with self.assertRaises(BadOptionUsage):
-            s.get_profile()
 
     def test_get_profile(self, *args):
         s = SettingsConstructor(profile_name="my_profile")
