@@ -30,8 +30,7 @@ class TestInitialization(TestCase):
     def test_initialization_path(self):
         self.clear_if_installed()
 
-        i = Initialize()
-        i.do_initialize(TEST_DIR)
+        Initialize().do_initialize(TEST_DIR)
         self.assertTrue(os.path.isfile(TEST_INSTALL_JSON))
 
         with open(TEST_INSTALL_JSON, "r") as file:
@@ -66,8 +65,7 @@ class TestInitialization(TestCase):
 
     def test_error_when_install_path_does_not_exist(self):
         with self.assertRaises(click.BadArgumentUsage):
-            i = Initialize()
-            i.do_initialize("this/does/not/exist")
+            Initialize().do_initialize("this/does/not/exist")
 
     def test_error_when_install_path_is_already_the_path_installed(self):
         self.clear_if_installed()

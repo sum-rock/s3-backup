@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from pathlib import Path
+
 import click
 
 from s3_backup import (Backup, Collection, Initialize, ManageProfiles, Restore,
@@ -12,13 +14,12 @@ def cli():
 
 
 @cli.command(help="Initialize the CLI, required before executing or managing")
-@click.option("--path", help="indicate where to store your s3-backup data")
+@click.argument("path", help="indicate where to init s3-backup data, defaults to home.")
 def init(path):
     if not path:
-        raise click.BadOptionUsage("--path", "Must specify a path.")
+        path = str(Path.home().resolve())
 
-    i = Initialize()
-    i.do_initialize(path)
+    Initialize().do_initialize(path)
     click.echo("success")
 
 
@@ -29,17 +30,13 @@ def execute():
 
 @execute.command(help="Perform backup operation")
 @click.option("--allow-source-mismatch", default=False)
-@click.option("--name", help="indicate the profile to backup")
+@click.argument("name", help="indicate the profile to backup")
 def backup(allow_source_mismatch, name):
-    if not name:
-        raise click.BadOptionUsage("--name", "Must specify a profile.")
-
     settings = SettingsConstructor(profile_name=name)
-    profile = settings.get_profile()
-    Context = settings.get_context_klass()
+    settings.verify_profile()
 
-    with Context():
-        b = Backup(profile)
+    with settings.get_context_klass()():
+        b = Backup(settings.get_profile())
 
         if allow_source_mismatch:
             b.do_backup(opts={"--allow-source-mismatch": ""})
@@ -50,18 +47,13 @@ def backup(allow_source_mismatch, name):
 
 
 @execute.command(help="Perform restore operation")
-@click.option("--name", help="indicate the profile to restore")
+@click.argument("name", help="indicate the profile to restore")
 def restore(name):
-    if not name:
-        raise click.BadOptionUsage("--name", "Must specify a profile.")
-
     settings = SettingsConstructor(profile_name=name)
-    profile = settings.get_profile()
-    Context = settings.get_context_klass()
+    settings.verify_profile()
 
-    with Context():
-        r = Restore(profile)
-        r.do_restore()
+    with settings.get_context_klass()():
+        Restore(settings.get_profile()).do_restore()
 
     click.echo("success")
 
@@ -72,48 +64,33 @@ def collection():
 
 
 @collection.command(help="Output collection status")
-@click.option("--name", help="indicate the profile to evaluate.")
+@click.argument("name", help="indicate the profile to evaluate.")
 def status(name):
-    if not name:
-        raise click.BadOptionUsage("--name", "Must specify a profile.")
-
     settings = SettingsConstructor(profile_name=name)
-    profile = settings.get_profile()
-    Context = settings.get_context_klass()
+    settings.verify_profile()
 
-    with Context():
-        c = Collection(profile)
-        c.get_collection_status()
+    with settings.get_context_klass()():
+        Collection(settings.get_profile()).get_collection_status()
 
 
 @collection.command(help="Output a file list of files currently in the backup.")
-@click.option("--name", help="indicate the profile to evaluate.")
+@click.argument("name", help="indicate the profile to evaluate.")
 def list_current_files(name):
-    if not name:
-        raise click.BadOptionUsage("--name", "Must specify a profile.")
-
     settings = SettingsConstructor(profile_name=name)
-    profile = settings.get_profile()
-    Context = settings.get_context_klass()
+    settings.verify_profile()
 
-    with Context():
-        c = Collection(profile)
-        c.get_file_list()
+    with settings.get_context_klass()():
+        Collection(settings.get_profile()).get_file_list()
 
 
 @collection.command(help="Run the duplicity cleanup command for this profile.")
-@click.option("--name", help="indicate the profile to cleanup.")
+@click.argument("name", help="indicate the profile to cleanup.")
 def cleanup(name):
-    if not name:
-        raise click.BadOptionUsage("--name", "Must specify a profile.")
-
     settings = SettingsConstructor(profile_name=name)
-    profile = settings.get_profile()
-    Context = settings.get_context_klass()
+    settings.verify_profile()
 
-    with Context():
-        c = Collection(profile)
-        c.do_cleanup()
+    with settings.get_context_klass()():
+        Collection(settings.get_profile()).do_cleanup()
 
 
 @click.group(help="Profile management commands, including add, remove, and edit")
@@ -122,25 +99,32 @@ def profile():
 
 
 @profile.command(help="Create a new profile")
-@click.option("--name", help="name of the new profile")
+@click.argument("name", help="name of the new profile")
 def create(name):
-    if not name:
-        raise click.BadOptionUsage("--name", "Must provide a name for your profile.")
     m = ManageProfiles()
-    m.do_add(name)
+    if not name:
+        raise click.BadArgumentUsage("Must provide a name for your profile.")
+    elif name in m.installed_profiles:
+        raise click.BadArgumentUsage(
+            "A profile with this name has already been created."
+        )
+    else:    
+        m.do_add(name)
 
 
 @profile.command(help="Edit a profile")
-@click.option("--name", help="name of the profile to edit")
+@click.argument("name", help="name of the profile to edit")
 def edit(name):
     m = ManageProfiles()
+    m.verify_profile(name)
     m.do_edit(name)
 
 
 @profile.command(help="Edit a profile")
-@click.option("--name", help="name of the profile to edit")
+@click.argument("name", help="name of the profile to edit")
 def remove(name):
     m = ManageProfiles()
+    m.verify_profile(name)
     m.do_remove(name)
 
 

@@ -30,7 +30,7 @@ class Backup:
                 os.remove(f"{self.profile.log_dir}/{existing_log}")
 
     @property
-    def _new_log_path(self):
+    def _new_log_path(self) -> str:
         today = f"{dt.datetime.now().strftime('%Y-%m-%d')}.log"
         if today in os.listdir(self.profile.log_dir):
             os.remove(f"{self.profile.log_dir}/{today}")
