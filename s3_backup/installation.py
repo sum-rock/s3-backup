@@ -27,7 +27,8 @@ class Installation:
     @property
     def _install_data(self) -> dict:
         if not self.is_installed:
-            raise click.BadArgumentUsage(
+            raise click.BadOptionUsage(
+                "--profile",
                 "Cannot retrieve installation data because s3-backup is not initialized",
             )
 
@@ -58,9 +59,3 @@ class Installation:
     def get_log_path(self, name: str) -> str:
         """Get the path of the logs for the given profile"""
         return f"{self.install_path}/logs/{name}"
-
-    def verify_profile(self, name: str):
-        if name not in self.installed_profiles:
-            raise click.BadArgumentUsage(
-                f"{name} is not found in the configured profiles."
-            )

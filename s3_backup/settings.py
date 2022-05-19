@@ -2,6 +2,7 @@ import os
 from functools import cached_property
 from typing import List, Type
 
+import click
 import yaml
 
 from .installation import Installation
@@ -51,11 +52,13 @@ class SettingsConstructor(Installation):
     def __init__(self, profile_name: str):
         self.profile_name = profile_name
 
-    def verify_profile(self):
-        return super().verify_profile(name=self.profile_name)
-
     @cached_property
     def yaml_data(self):
+        if self.profile_name not in self.installed_profiles:
+            raise click.BadOptionUsage(
+                "--profile",
+                f"{self.profile_name} is not found in the configured profiles.",
+            )
         with open(f"{self.install_path}/profiles/{self.profile_name}.yaml") as file:
             yaml_data = yaml.load(file, Loader=yaml.Loader)
         return yaml_data
