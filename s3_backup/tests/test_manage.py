@@ -3,8 +3,6 @@ import pathlib
 import shutil
 from unittest import TestCase, mock
 
-import click
-
 from s3_backup import ManageProfiles
 
 THIS_DIR = pathlib.Path(__file__).parent.resolve()

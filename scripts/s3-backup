@@ -1,16 +1,11 @@
 #!/usr/bin/python3
 
-import click
 from pathlib import Path
 
-from s3_backup import (
-    Backup,
-    Collection,
-    Initialize,
-    ManageProfiles,
-    Restore,
-    SettingsConstructor,
-)
+import click
+
+from s3_backup import (Backup, Collection, Initialize, ManageProfiles, Restore,
+                       SettingsConstructor)
 
 
 @click.group()
@@ -24,8 +19,7 @@ def init(path):
     if not path:
         path = str(Path.home().resolve())
 
-    i = Initialize()
-    i.do_initialize(path)
+    Initialize().do_initialize(path)
     click.echo("success")
 
 
@@ -59,8 +53,7 @@ def restore(name):
     settings.verify_profile()
 
     with settings.get_context_klass()():
-        r = Restore(settings.get_profile())
-        r.do_restore()
+        Restore(settings.get_profile()).do_restore()
 
     click.echo("success")
 
@@ -77,8 +70,7 @@ def status(name):
     settings.verify_profile()
 
     with settings.get_context_klass()():
-        c = Collection(settings.get_profile())
-        c.get_collection_status()
+        Collection(settings.get_profile()).get_collection_status()
 
 
 @collection.command(help="Output a file list of files currently in the backup.")
@@ -88,8 +80,7 @@ def list_current_files(name):
     settings.verify_profile()
 
     with settings.get_context_klass()():
-        c = Collection(settings.get_profile())
-        c.get_file_list()
+        Collection(settings.get_profile()).get_file_list()
 
 
 @collection.command(help="Run the duplicity cleanup command for this profile.")
@@ -99,8 +90,7 @@ def cleanup(name):
     settings.verify_profile()
 
     with settings.get_context_klass()():
-        c = Collection(settings.get_profile())
-        c.do_cleanup()
+        Collection(settings.get_profile()).do_cleanup()
 
 
 @click.group(help="Profile management commands, including add, remove, and edit")

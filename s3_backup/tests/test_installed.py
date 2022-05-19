@@ -1,6 +1,9 @@
 from unittest import TestCase, mock
-from s3_backup import Installation
+
 import click
+
+from s3_backup import Installation
+
 from .profile_mocks import INSTALL_PATH
 
 test_install_path = mock.MagicMock(return_value=INSTALL_PATH)
@@ -13,4 +16,3 @@ class TestInstallation(TestCase):
         i = Installation()
         with self.assertRaises(click.BadArgumentUsage):
             i.verify_profile(name="This does not exist")
-        

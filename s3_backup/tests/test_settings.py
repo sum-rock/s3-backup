@@ -1,7 +1,9 @@
 import os
 from unittest import TestCase, mock
-from .profile_mocks import INSTALL_PATH, THIS_DIR
+
 from s3_backup import SettingsConstructor
+
+from .profile_mocks import INSTALL_PATH, THIS_DIR
 
 test_install_path = mock.MagicMock(return_value=INSTALL_PATH)
 

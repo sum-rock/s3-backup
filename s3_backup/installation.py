@@ -27,8 +27,7 @@ class Installation:
     @property
     def _install_data(self) -> dict:
         if not self.is_installed:
-            raise click.BadOptionUsage(
-                "--profile",
+            raise click.BadArgumentUsage(
                 "Cannot retrieve installation data because s3-backup is not initialized",
             )
 
