@@ -41,7 +41,7 @@ Still as root
 cd ~
 git clone https://github.com/sum-rock/s3-backup.git
 cd s3-backup
-python3.9 setup.py install
+pip3.9 install .
 cd ../
 rm -rf s3-backup 
 ```
@@ -57,7 +57,7 @@ The path option within the init command specifies where the profile data and log
 be saved.
 
 ```bash
-s3-backup init --path ~
+s3-backup init ~
 ```
 
 ### Profiles
@@ -67,7 +67,7 @@ subcommand. The name option within the profile subcommand is used to specify the
 name.
 
 ```bash
-s3-backup profile [create, edit, remove] --name sample-profile
+s3-backup profile [create, edit, remove] <profile-name>
 ```
 
 ### Execute
@@ -77,7 +77,7 @@ standard duplicity commands.) The name option within the profile subcommand is u
 specify the profile name.
 
 ```bash
-s3-backup execute [backup, restore] --name sample-profile
+s3-backup execute [backup, restore] <profile-name>
 ```
 
 ### Collection
@@ -86,5 +86,5 @@ The collection subcommand is used to print the status of the remote backup. Agai
 name option is used to specify the profile of the collection being evaluated.
 
 ```bash
-s3-backup collection [collection-status, list-current-file] --name sample-profile
+s3-backup collection [status, list-current-files] <profile-name>
 ```
