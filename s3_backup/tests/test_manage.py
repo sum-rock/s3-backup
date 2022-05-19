@@ -25,11 +25,3 @@ class TestAddProfile(TestCase):
 
         os.remove(f"{profile_dir}/my_new_profile.yaml")
         shutil.rmtree(manager.get_log_path("my_new_profile"))
-
-    def test_do_add_error_if_profile_exists(self, *args):
-        manager = ManageProfiles()
-        profile_dir = f"{manager.install_path}/profiles"
-        self.assertTrue(os.path.isfile(f"{profile_dir}/my_profile.yaml"))
-
-        with self.assertRaises(click.BadArgumentUsage):
-            manager.do_add("my_profile")

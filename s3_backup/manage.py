@@ -20,12 +20,6 @@ class ManageProfiles(Installation):
             )
 
     def do_add(self, name: str):
-        if name in self.installed_profiles:
-            raise click.BadArgumentUsage(
-                "A profile with this name has already been created. Please choose a "
-                "different name."
-            )
-
         path = self.get_profile_path(name)
         with open(self._template_path, "r") as t, open(path, "w") as n:
             n.write(t.read())
