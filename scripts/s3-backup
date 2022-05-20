@@ -4,8 +4,14 @@ from pathlib import Path
 
 import click
 
-from s3_backup import (Backup, Collection, Initialize, ManageProfiles, Restore,
-                       SettingsConstructor)
+from s3_backup import (
+    Backup,
+    Collection,
+    Initialize,
+    ManageProfiles,
+    Restore,
+    SettingsConstructor,
+)
 
 
 @click.group()
@@ -93,6 +99,23 @@ def cleanup(name):
         Collection(settings.get_profile()).do_cleanup()
 
 
+@collection.command(
+    help="Removes all backups older than the count back of full backups."
+)
+@click.option(
+    "--count",
+    default=4,
+    help="Count of full backups and associated incremental backups to keep.",
+)
+@click.argument("name")
+def prune(name, count):
+    settings = SettingsConstructor(profile_name=name)
+    settings.verify_profile()
+
+    with settings.get_context_klass()():
+        Collection(settings.get_profile()).do_prune(count)
+
+
 @click.group(help="Profile management commands, including add, remove, and edit")
 def profile():
     pass
@@ -108,7 +131,7 @@ def create(name):
         raise click.BadArgumentUsage(
             "A profile with this name has already been created."
         )
-    else:    
+    else:
         m.do_add(name)
 
 

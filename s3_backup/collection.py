@@ -19,3 +19,9 @@ class Collection:
         cmd = "duplicity cleanup --force"
         cmd += self.profile.s3_url
         os.system(cmd)
+
+    def do_prune(self, count: int):
+        cmd = "duplicity remove-all-but-n-full "
+        cmd += f"{count} "
+        cmd += "--force "
+        cmd += self.profile.s3_url
