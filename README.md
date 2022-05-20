@@ -73,8 +73,8 @@ s3-backup profile [create, edit, remove] <profile-name>
 ### Execute
 
 Profiles are able to be used to execute backup and restore commands. (These parse to
-standard duplicity commands.) The name option within the profile subcommand is used to
-specify the profile name.
+standard duplicity commands.) The name argument within the profile subcommand is used to
+specify the profile to action on.
 
 ```bash
 s3-backup execute [backup, restore] <profile-name>
@@ -82,9 +82,9 @@ s3-backup execute [backup, restore] <profile-name>
 
 ### Collection
 
-The collection subcommand is used to print the status of the remote backup. Again, the
-name option is used to specify the profile of the collection being evaluated.
+The collection subcommand is used to perform several collection management actions. Again,
+the name argument is used to specify the profile of the collection being managed.
 
 ```bash
-s3-backup collection [status, list-current-files] <profile-name>
+s3-backup collection [status, list-files, clean, prune] <profile-name>
 ```
