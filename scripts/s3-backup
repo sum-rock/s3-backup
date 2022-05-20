@@ -81,7 +81,7 @@ def status(name):
 
 @collection.command(help="Output a file list of files currently in the backup.")
 @click.argument("name")
-def list_current_files(name):
+def list_files(name):
     settings = SettingsConstructor(profile_name=name)
     settings.verify_profile()
 
