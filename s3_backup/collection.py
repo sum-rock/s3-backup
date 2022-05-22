@@ -25,3 +25,4 @@ class Collection:
         cmd += f"{count} "
         cmd += "--force "
         cmd += self.profile.s3_url
+        os.system(cmd)
