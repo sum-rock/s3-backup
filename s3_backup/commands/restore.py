@@ -1,12 +1,14 @@
+from typing import TYPE_CHECKING
 import datetime as dt
 import os
 from typing import Optional
 
-from .settings import Profile
+if TYPE_CHECKING:
+    from s3_backup.context import Profile
 
 
 class Restore:
-    def __init__(self, profile: Profile):
+    def __init__(self, profile: "Profile"):
         self.profile = profile
 
     def get_restore_path(self):

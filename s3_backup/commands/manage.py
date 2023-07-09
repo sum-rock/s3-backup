@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from .installation import Installation
+from s3_backup.context import Installation
 
 
 class ProcessError(Exception):

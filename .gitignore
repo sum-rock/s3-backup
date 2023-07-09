@@ -6,8 +6,8 @@ __pycache__
 .env
 dist
 build
-tests/home/.s3-backup/logs/*
-!/tests/home/.s3-backup/logs/myprofile/.gitkeep
-tests/home/restore/*
-!/tests/home/restore/.gitkeep
+s3_backup/tests/home/.s3-backup/logs/*
+!s3_backup/tests/home/.s3-backup/logs/myprofile/.gitkeep
+s3_backup/tests/home/restore/*
+!s3_backup/tests/home/restore/.gitkeep
 /s3_backup.egg-info

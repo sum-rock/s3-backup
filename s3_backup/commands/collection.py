@@ -1,10 +1,12 @@
+from typing import TYPE_CHECKING
 import os
 
-from .settings import Profile
+if TYPE_CHECKING:
+    from s3_backup.context import Profile
 
 
 class Collection:
-    def __init__(self, profile: Profile):
+    def __init__(self, profile: "Profile"):
         self.profile = profile
 
     def get_collection_status(self):

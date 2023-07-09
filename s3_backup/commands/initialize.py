@@ -4,7 +4,7 @@ import pathlib
 
 import click
 
-from .installation import Installation
+from s3_backup.context import Installation
 
 THIS_DIR = str(pathlib.Path(__file__).parent.resolve())
 INSTALL_JSON = f"{THIS_DIR}/data/install.json"

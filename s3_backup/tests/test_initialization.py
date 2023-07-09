@@ -6,7 +6,7 @@ from unittest import TestCase
 
 import click
 
-from s3_backup import Initialize
+from s3_backup.context import Initialize
 
 TEST_DIR = str(pathlib.Path(__file__).parent.resolve())
 TEST_S3_BACKUP = f"{TEST_DIR}/.s3-backup"

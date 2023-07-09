@@ -3,7 +3,8 @@ import os
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from s3_backup import Backup, SettingsConstructor
+from s3_backup.commands import Backup
+from s3_backup.context import SettingsConstructor
 
 from .profile_mocks import ENV_VALUES, INSTALL_PATH, THIS_DIR, YAML_DATA
 
@@ -11,9 +12,9 @@ install_path = MagicMock(return_value=INSTALL_PATH)
 yaml_data = MagicMock(return_value=YAML_DATA)
 
 
-@patch("s3_backup.Installation.is_installed", return_value=True)
-@patch("s3_backup.Installation.install_path", install_path())
-@patch("s3_backup.SettingsConstructor.yaml_data", yaml_data())
+@patch("s3_backup.context.Installation.is_installed", return_value=True)
+@patch("s3_backup.context.Installation.install_path", install_path())
+@patch("s3_backup.context.SettingsConstructor.yaml_data", yaml_data())
 class TestBackup(TestCase):
     def test_get_command(self, *args):
         settings = SettingsConstructor(profile_name="my_profile")
