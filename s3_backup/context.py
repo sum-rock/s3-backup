@@ -49,6 +49,7 @@ class ContextManager:
             if variable in os.environ.keys():
                 del os.environ[variable]
 
+
 class Installation:
     """General Information about the installation"""
 
@@ -104,6 +105,7 @@ class Installation:
             raise click.BadArgumentUsage(
                 f"{name} is not found in the configured profiles."
             )
+
 
 class SettingsConstructor(Installation):
     """Constructs a context manager and profile from a given profile name."""

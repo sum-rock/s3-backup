@@ -6,7 +6,7 @@ import click
 
 from s3_backup.context import Installation
 
-THIS_DIR = str(pathlib.Path(__file__).parent.resolve())
+THIS_DIR = str(pathlib.Path(__file__).parent.parent.resolve())
 INSTALL_JSON = f"{THIS_DIR}/data/install.json"
 
 
