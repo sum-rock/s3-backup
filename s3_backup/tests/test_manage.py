@@ -3,14 +3,14 @@ import pathlib
 import shutil
 from unittest import TestCase, mock
 
-from s3_backup import ManageProfiles
+from s3_backup.commands import ManageProfiles
 
 THIS_DIR = pathlib.Path(__file__).parent.resolve()
 test_install_path = mock.MagicMock(return_value=f"{THIS_DIR}/home/.s3-backup")
 
 
-@mock.patch("s3_backup.Installation.is_installed", return_value=True)
-@mock.patch("s3_backup.Installation.install_path", test_install_path())
+@mock.patch("s3_backup.context.Installation.is_installed", return_value=True)
+@mock.patch("s3_backup.context.Installation.install_path", test_install_path())
 class TestAddProfile(TestCase):
     def test_do_add(self, *args):
         manager = ManageProfiles()

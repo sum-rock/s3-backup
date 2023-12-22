@@ -1,17 +1,15 @@
-#!/usr/bin/python3
-
 from pathlib import Path
 
 import click
 
-from s3_backup import (
+from commands import (
     Backup,
     Collection,
     Initialize,
     ManageProfiles,
     Restore,
-    SettingsConstructor,
 )
+from context import SettingsConstructor
 
 
 @click.group()
